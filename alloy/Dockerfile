@@ -1,6 +1,7 @@
 ARG BUILD_FROM
 FROM ${BUILD_FROM}
 
+# hadolint ignore=DL3008
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
        curl bash jq unzip ca-certificates \
