@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1
+
+- Fix: correct journal field names in relabel rules (`syslog_identifier`, `container_name`)
+- Fix: remove non-existent `PRIORITY_KEYWORD` level relabel rule (Loki `detected_level` handles this automatically)
+
 ## 1.0.0
 
 - Initial release

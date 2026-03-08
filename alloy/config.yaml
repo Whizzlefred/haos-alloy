@@ -1,6 +1,6 @@
 ---
 name: Grafana Alloy
-version: "1.0.0"
+version: "1.0.1"
 slug: alloy
 description: >-
   Ship Home Assistant OS systemd journal logs to Loki using Grafana Alloy.
