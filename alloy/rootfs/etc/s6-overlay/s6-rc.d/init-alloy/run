@@ -78,7 +78,7 @@ loki.relabel "journal" {
     target_label  = "hostname"
   }
   rule {
-    source_labels = ["__journal__SYSLOG_IDENTIFIER"]
+    source_labels = ["__journal_syslog_identifier"]
     target_label  = "syslog_identifier"
   }
   rule {
@@ -86,12 +86,8 @@ loki.relabel "journal" {
     target_label  = "transport"
   }
   rule {
-    source_labels = ["__journal__CONTAINER_NAME"]
+    source_labels = ["__journal_container_name"]
     target_label  = "container_name"
-  }
-  rule {
-    source_labels = ["__journal__PRIORITY_KEYWORD"]
-    target_label  = "level"
   }
 }
 
