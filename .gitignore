@@ -11,5 +11,9 @@
 # Test artifacts
 test-options.json
 
+# Environment files (may contain credentials or local IPs)
+.env
+.env.*
+
 # Alloy runtime data (generated inside container, not in repo)
 data/
