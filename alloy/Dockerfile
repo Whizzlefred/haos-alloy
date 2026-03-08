@@ -25,7 +25,6 @@ RUN set -eux; \
 
 COPY rootfs /
 
-ARG BUILD_DATE
 ARG BUILD_VERSION
 LABEL \
     io.hass.name="Grafana Alloy" \
