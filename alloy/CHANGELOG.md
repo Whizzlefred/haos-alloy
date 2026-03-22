@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0
+
+- Add `ca_cert_file` option for custom CA certificate support (Closes #7)
+- Add `ssl:ro` volume mapping for `/ssl/` directory access
+
 ## 1.0.1
 
 - Fix: correct journal field names in relabel rules (`syslog_identifier`, `container_name`)

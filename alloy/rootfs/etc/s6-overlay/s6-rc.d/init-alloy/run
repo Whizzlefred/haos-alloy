@@ -12,6 +12,7 @@ mkdir -p "${CONFIG_DIR}" /data/alloy
 LOKI_URL=$(jq -r '.loki_url' "${OPTIONS_FILE}")
 LOG_LEVEL=$(jq -r '.log_level // "info"' "${OPTIONS_FILE}")
 ADDITIONAL_CONFIG=$(jq -r '.additional_config // ""' "${OPTIONS_FILE}")
+CA_CERT_FILE=$(jq -r '.ca_cert_file // ""' "${OPTIONS_FILE}")
 
 # Validate required options
 if [ -z "${LOKI_URL}" ] || [ "${LOKI_URL}" = "null" ]; then
@@ -30,12 +31,32 @@ if [ ! -d "${JOURNAL_PATH}" ]; then
     exit 1
 fi
 
+# Validate CA certificate file if provided
+if [ -n "${CA_CERT_FILE}" ] && [ "${CA_CERT_FILE}" != "null" ]; then
+    if [ ! -f "${CA_CERT_FILE}" ]; then
+        echo "ERROR: CA certificate file not found: ${CA_CERT_FILE}" >&2
+        exit 1
+    fi
+fi
+
 echo "-----------------------------------------------------------"
 echo " Grafana Alloy for Home Assistant"
 echo " Loki URL:      ${LOKI_URL}"
 echo " Journal path:  ${JOURNAL_PATH}"
 echo " Log level:     ${LOG_LEVEL}"
+if [ -n "${CA_CERT_FILE}" ] && [ "${CA_CERT_FILE}" != "null" ]; then
+    echo " CA cert file:  ${CA_CERT_FILE}"
+fi
 echo "-----------------------------------------------------------"
+
+# Build optional TLS config block for loki.write endpoint
+TLS_CONFIG_BLOCK=""
+if [ -n "${CA_CERT_FILE}" ] && [ "${CA_CERT_FILE}" != "null" ]; then
+    TLS_CONFIG_BLOCK="
+    tls_config {
+      ca_file = \"${CA_CERT_FILE}\"
+    }"
+fi
 
 # Generate Alloy config
 cat > "${CONFIG_FILE}" <<ALLOYCONFIG
@@ -49,7 +70,7 @@ logging {
 // --- Write to Loki ---
 loki.write "default" {
   endpoint {
-    url = "${LOKI_URL}"
+    url = "${LOKI_URL}"${TLS_CONFIG_BLOCK}
   }
 }
 
