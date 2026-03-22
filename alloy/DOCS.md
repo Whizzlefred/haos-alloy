@@ -18,6 +18,8 @@ changes.
 
 - **log_level**: Alloy log verbosity (`debug`, `info`, `warn`, `error`).
   Default: `info`
+- **ca_cert_file**: Path to a custom CA certificate file for TLS connections
+  to Loki (e.g., `/ssl/my-ca.crt`). See [TLS / Custom CA Certificates](#tls--custom-ca-certificates) below.
 - **additional_config**: Extra Alloy config blocks to append (advanced users)
 
 ## Labels
@@ -37,6 +39,29 @@ All journal entries are shipped to Loki with these labels:
 | `transport`        | journal transport type                    |
 | `container_name`   | Docker container name (for add-ons)       |
 | `level`            | log priority (debug, info, warning, etc.) |
+
+## TLS / Custom CA Certificates
+
+If your Loki instance uses TLS with a private or internal CA (e.g., step-ca,
+self-signed), Alloy will reject the certificate by default. Use the
+`ca_cert_file` option to provide your CA certificate.
+
+### Setup
+
+1. Copy your CA certificate (PEM format) to the Home Assistant `/ssl/`
+   directory. You can use the File Editor add-on, Samba share, or SSH.
+
+2. Set the add-on option to the certificate path:
+
+   ```yaml
+   loki_url: https://loki.example.com:3100/loki/api/v1/push
+   ca_cert_file: /ssl/my-ca.crt
+   ```
+
+3. Restart the add-on.
+
+A single PEM file can contain multiple CA certificates if you need to trust
+more than one CA.
 
 ## Debug UI
 
@@ -75,6 +100,9 @@ prevent Alloy from starting.
 - **Journal path not found**: The add-on auto-detects `/var/log/journal` or
   `/run/log/journal`. If neither exists, ensure `journald: true` is set in
   the add-on config (it is by default).
+- **TLS handshake errors / logs not arriving over HTTPS**: If your Loki
+  instance uses a private CA, set `ca_cert_file` to the path of your CA
+  certificate (e.g., `/ssl/my-ca.crt`). Ensure the file is in PEM format.
 
 ## Support
 
